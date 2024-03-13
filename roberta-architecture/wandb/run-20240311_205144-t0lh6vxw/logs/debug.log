@@ -1,0 +1,21 @@
+2024-03-11 20:51:44,850 INFO    MainThread:25235 [wandb_setup.py:_flush():76] Current SDK version is 0.16.3
+2024-03-11 20:51:44,850 INFO    MainThread:25235 [wandb_setup.py:_flush():76] Configure stats pid to 25235
+2024-03-11 20:51:44,850 INFO    MainThread:25235 [wandb_setup.py:_flush():76] Loading settings from /home/jovyan/.config/wandb/settings
+2024-03-11 20:51:44,850 INFO    MainThread:25235 [wandb_setup.py:_flush():76] Loading settings from /home/jovyan/shared/Sarah/current/deepspeed/roberta-architecture/wandb/settings
+2024-03-11 20:51:44,850 INFO    MainThread:25235 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'deepspeed/roberta-architecture/script-training-robertaconfig.py', 'program_abspath': '/home/jovyan/shared/Sarah/current/deepspeed/roberta-architecture/script-training-robertaconfig.py', 'program': '/home/jovyan/shared/Sarah/current/deepspeed/roberta-architecture/script-training-robertaconfig.py'}
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_init.py:_log_setup():526] Logging user logs to /home/jovyan/shared/Sarah/current/deepspeed/roberta-architecture/wandb/run-20240311_205144-t0lh6vxw/logs/debug.log
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_init.py:_log_setup():527] Logging internal logs to /home/jovyan/shared/Sarah/current/deepspeed/roberta-architecture/wandb/run-20240311_205144-t0lh6vxw/logs/debug-internal.log
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_init.py:init():566] calling init triggers
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_init.py:init():573] wandb.init called with sweep_config: {}
+config: {}
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_init.py:init():616] starting backend
+2024-03-11 20:51:44,851 INFO    MainThread:25235 [wandb_init.py:init():620] setting up manager
+2024-03-11 20:51:44,852 INFO    MainThread:25235 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-03-11 20:51:44,853 INFO    MainThread:25235 [wandb_init.py:init():628] backend started and connected
+2024-03-11 20:51:44,855 INFO    MainThread:25235 [wandb_init.py:init():720] updated telemetry
+2024-03-11 20:51:44,873 INFO    MainThread:25235 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2024-03-11 20:51:45,184 INFO    MainThread:25235 [wandb_run.py:_on_init():2262] communicating current version
+2024-03-11 20:51:45,226 INFO    MainThread:25235 [wandb_run.py:_on_init():2271] got version response upgrade_message: "wandb version 0.16.4 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-03-11 20:51:45,226 INFO    MainThread:25235 [wandb_init.py:init():804] starting run threads in backend

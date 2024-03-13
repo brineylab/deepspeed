@@ -1,0 +1,53 @@
+# Model Config
+vocab_size: 26
+pad_token_id: 21
+mask_token_id: 22
+num_attention_heads: 20
+num_hidden_layers: 32
+hidden_size: 960
+intermediate_size: 3840
+max_position_embeddings: 322
+position_embedding_type: "rotary"
+
+# Tokenizer
+tokenizer_path: "vocab.txt"
+padding: "max_length"
+max_length: 320
+truncation: True
+return_special_tokens_mask: False
+separator_token: "<cls><cls>"
+
+# Datasets
+train_file: "/home/jovyan/shared/Sarah/training-data/paired-longitudinalHD/data/clust90-split/jaffe_longHD_clust90_train.csv"
+validation_file: "/home/jovyan/shared/Sarah/training-data/paired-longitudinalHD/data/clust90-split/jaffe_longHD_clust90_eval.csv"
+file_type: "csv"
+
+# Collator
+mlm: True
+mlm_probability: 0.15
+
+# Training Arguments
+run_name: "BALM-paired-ESM"
+fp16: True
+seed: 42
+batch_size: 32
+gradient_accumulation_steps: 1
+logging_steps: 100
+evaluation_strategy: "steps"
+eval_steps: 25000
+
+warmup_steps: 30000
+max_steps: 500000
+
+peak_learning_rate: 0.0004
+weight_decay: 0.01
+adam_epsilon: 0.000001
+adam_beta1: 0.9
+adam_beta2: 0.98
+
+overwrite_output_dir: True
+output_dir: "./checkpoints/{run_name}"
+report_to: "wandb"
+wandb_project: "sarah_testing"
+logging_first_step: True
+logging_dir: "./wandb/{run_name}"
