@@ -1,7 +1,5 @@
-Here's the simpilest way to run deepspeed when using hugging face models, trainer, etc. Note that this may not
-be compatible with the most complicated model architectures nor does it allow more the most robust deepspeed
-customization. However, for speeding-up the routine training jobs we perform, this is a efficient + easy to use
-option.
+Here's the simpilest way to run deepspeed when using hugging face models, trainer, etc. 
+Note that this may not be compatible with the most complicated model architectures nor does it allow more the most robust deepspeed customization. 
 
 This guide is based primarily on the information from hugging face's accelerate guide. More useful info can be found at the link below.
 * https://huggingface.co/docs/accelerate/en/usage_guides/deepspeed#deepspeed-config-file

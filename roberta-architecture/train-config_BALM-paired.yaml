@@ -52,4 +52,3 @@ wandb_project: "sarah_testing"
 wandb_job_type: "deepspeed-stages"
 logging_first_step: True
 logging_dir: "./wandb/{run_name}"
-deepspeed: "deepspeed_config.json"
