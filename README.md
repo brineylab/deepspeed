@@ -43,7 +43,7 @@ I've written this assuming that you are using one of the following docker images
     
     * You cannot run deepspeed for multi-gpu training from a jupyter notebook, you need to use a python script.
 
-    * No deepspeed-specific modifications to the python script are needed. Two examples of the scripts I use are provided, but you don't need to format your scripts in any particular way (this is just my preference).
+    * No deepspeed-specific modifications to the python script are needed. Two examples of the scripts I use are provided, but you don't need to format your scripts in any particular way (For instance, I use an argument parser to parse config and training info from a YAML file, this is *not* required).
 
     * One important note: don't use wandb.init() to initalize your wandb run, this will cause your wandb session to be intitialized multiple times. Just set the wandb enviornmental variables and training arguments in your script (as shown in the example scripts) and let Hugging Face initialize wandb for you.
 
