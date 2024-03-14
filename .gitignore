@@ -1,0 +1,14 @@
+# folders - contain large files
+checkpoints/
+wandb/
+models/
+data/
+
+# jupyter notebooks
+.ipynb_checkpoints
+
+# python
+__pycache__
+
+# macOS
+*.DS_Store
