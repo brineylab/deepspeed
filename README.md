@@ -4,7 +4,6 @@ This guide is based primarily on the information from the Hugging Face Accelerat
 
 I've written this assuming that you are using one of the following docker images: `kubeflow-deeplearning:v2024-02-21` or `brineylab/kubeflow-codeserver:v2024-03-13`.
 * Loading the `kubeflow-deeplearning:latest` image doesn't always pull the most updated version, so it is best to specify the version date.
-* If you are using an earlier version of images, deepspeed will not be installed. You will have to `pip install deepspeed` after installing the cudatoolkit in Step 1.
 
 
 1. Install the cudatookit (because it is not currently installed in our docker images):
@@ -56,9 +55,9 @@ I've written this assuming that you are using one of the following docker images
         tmux new -s session-name
         ```
 
-5. Run your script using the accelerate launcher.
+5. Run your script using the `accelerate launch` command. For the example scripts I provided, the command would be:
     ```bash
-    accelerate launch script.py --script_args
+    accelerate launch robertaconfig-train.py --train_config train-config_BALM-paired.yaml
     ```
 
 6. Once the training has started, you should detach from the tmux session. Press `Ctrl` + `b` then `d` to detach.
