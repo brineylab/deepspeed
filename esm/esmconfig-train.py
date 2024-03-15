@@ -183,7 +183,8 @@ def main():
     
     # save and end
     trainer.save_model(f"./models/{run_name}")
-    wandb.finish()
+    
+    # don't finish wandb manually - it will finish when the script ends
     
 if __name__ == "__main__":
     main()
