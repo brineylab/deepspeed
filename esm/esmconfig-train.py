@@ -49,8 +49,7 @@ def define_config(train_config, tokenizer):
     return config
 
 
-def define_args(train_config):
-    run_name = train_config.get("run_name") + f"_{date.today().isoformat()}"
+def define_args(train_config, run_name):
     
     # setup training arguments
     training_args = TrainingArguments(
@@ -142,6 +141,8 @@ def main():
     with open(args.train_config, 'r') as stream:
         train_config = yaml.safe_load(stream)
 
+    run_name = train_config.get("run_name") + f"_{date.today().isoformat()}"
+
     # tokenize
     tokenizer = EsmTokenizer.from_pretrained(train_config.get("tokenizer_path"))
     tokenized_dataset = load_and_tokenize(train_config, tokenizer)
@@ -150,7 +151,7 @@ def main():
     model_config = define_config(train_config, tokenizer)
 
     # define training args
-    training_args = define_args(train_config)
+    training_args = define_args(train_config, run_name)
     
     # collator
     collator = DataCollatorForLanguageModeling(
