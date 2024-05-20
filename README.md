@@ -2,17 +2,22 @@ Below I've provided steps for the simpilest way to run deepspeed when using Hugg
 
 This guide is based primarily on the information from the Hugging Face Accelerate guide. More detailed info can be found [here](https://huggingface.co/docs/accelerate/en/usage_guides/deepspeed).
 
-I've written this assuming that you are using one of the following docker images: `kubeflow-deeplearning:v2024-02-21` or `brineylab/kubeflow-codeserver:v2024-03-13`.
-* Loading the `kubeflow-deeplearning:latest` image doesn't always pull the most updated version, so it is best to specify the version date.
+If you are using our newer docker images (`kubeflow-deeplearning:v2024-05-17` or `jupyterhub-deeplearning:v2024-05-17`), the cudatoolkit will already be installed. 
+* If you are not sure, run `which nvcc` in the terminal. If it is installed, the path to nvcc will be printed (typically /opt/conda/bin/nvcc). If needed, install as shown below:
 
-
-1. Install the cudatookit (because it is not currently installed in our docker images):
+    On Kubeflow servers:
     ```bash
-    conda install -c conda-forge cudatoolkit-dev
+        conda install -c conda-forge cudatoolkit-dev
     ``` 
-    * Check that install was successful by running: `which nvcc`. If installation was sucessful, the terminal will print the path to nvcc (typically /opt/conda/bin/nvcc)
 
-2. Set up the accelerate configuration by running: 
+    On JupyterHub servers:
+    ```bash
+        conda update --force conda
+        conda install nvidia/label/cuda-12.2.2::cuda-toolkit
+        conda install -c conda-forge gxx=11.4
+    ``` 
+
+1. Set up the accelerate configuration by running: 
     ```bash
     accelerate config
     ```
@@ -38,7 +43,7 @@ I've written this assuming that you are using one of the following docker images
 
     * More detailed info about deepspeed config files can be found [here](https://www.deepspeed.ai/docs/config-json/).
 
-3. Setup your python script. 
+2. Setup your python script. 
     
     * You cannot run deepspeed for multi-gpu training from a jupyter notebook, you need to use a python script.
 
@@ -46,7 +51,7 @@ I've written this assuming that you are using one of the following docker images
 
     * One important note: don't use wandb.init() to initalize your wandb run, this will cause your wandb session to be intitialized multiple times. Just set the wandb enviornmental variables and training arguments in your script (as shown in the example scripts) and let Hugging Face initialize wandb for you.
 
-4. Start a terminal multiplexer. This is required, otherwise your training with timeout when you close your connection to the server. 
+3. Start a terminal multiplexer. This is required, otherwise your training with timeout when you close your connection to the server. 
     
     * `tmux` and `screen` are good options. A useful tmux cheatsheet can be found [here](https://tmuxcheatsheet.com/).
 
@@ -55,19 +60,19 @@ I've written this assuming that you are using one of the following docker images
         tmux new -s session-name
         ```
 
-5. Run your script using the `accelerate launch` command. For the example scripts I provided, the command would be:
+4. Run your script using the `accelerate launch` command. For the example scripts I provided, the command would be:
     ```bash
     accelerate launch robertaconfig-train.py --train_config train-config_BALM-paired.yaml
     ```
 
-6. Once the training has started, you should detach from the tmux session. Press `Ctrl` + `b` then `d` to detach.
+5. Once the training has started, you should detach from the tmux session. Press `Ctrl` + `b` then `d` to detach.
 
     * To reattach to the terminal at any point during training, the command is: 
         ```bash
         tmux attach -t session-name
         ```
 
-7. Once training is complete, you can kill the tmux session: 
+6. Once training is complete, you can kill the tmux session: 
    
     ```bash
     tmux kill-session -t session-name
