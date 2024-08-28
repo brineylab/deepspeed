@@ -2,21 +2,6 @@ Below I've provided steps for the simpilest way to run deepspeed when using Hugg
 
 This guide is based primarily on the information from the Hugging Face Accelerate guide. More detailed info can be found [here](https://huggingface.co/docs/accelerate/en/usage_guides/deepspeed).
 
-If you are using our newer docker images (`kubeflow-deeplearning:v2024-05-17` or `jupyterhub-deeplearning:v2024-05-17`), the cudatoolkit will already be installed. 
-* If you are not sure, run `which nvcc` in the terminal. If it is installed, the path to nvcc will be printed (typically /opt/conda/bin/nvcc). If needed, install as shown below:
-
-    On Kubeflow servers:
-    ```bash
-        conda install -c conda-forge cudatoolkit-dev
-    ``` 
-
-    On JupyterHub servers:
-    ```bash
-        conda update --force conda
-        conda install nvidia/label/cuda-12.2.2::cuda-toolkit
-        conda install -c conda-forge gxx=11.4
-    ``` 
-
 1. Set up the accelerate configuration by running: 
     ```bash
     accelerate config
