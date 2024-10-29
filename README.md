@@ -19,7 +19,8 @@ This guide is based primarily on the information from the Hugging Face Accelerat
         * Do you want to use gradient clipping? **yes**
         * What is the gradient clipping value? **1.0** *(the default in the Hugging Face trainer)*
         * Do you want to enable 'deepspeed.zero.Init' when using ZeRO Stage-3 for constructing massive models? **NO**
-        * How many GPU(s) should be used for distributed training? **2** *(replace with # of gpus on your system)*
+        * Do you want to enable Mixture-of-Experts training (MoE)? **NO**
+        * How many GPU(s) should be used for distributed training? *(the # of gpus on your system)*
         * Do you wish to use FP16 or BF16 (mixed precision)? **fp16**
 
     * If you are running ZeRO Stage 2 or 3, you will also be prompted about optimizer, gradient, and parameter offloading. Currently, our systems can support offloading to cpu (but not NVMe). Be aware that offloading to cpu will decrease your gpu memory usage, but will slow down the training.

@@ -3,7 +3,7 @@ vocab_size: 26
 pad_token_id: 21
 mask_token_id: 22
 num_attention_heads: 20
-num_hidden_layers: 32
+num_hidden_layers: 32s
 hidden_size: 960
 intermediate_size: 3840
 max_position_embeddings: 322
@@ -35,6 +35,7 @@ gradient_accumulation_steps: 1
 logging_steps: 100
 evaluation_strategy: "steps"
 eval_steps: 25000
+save_steps: 50000
 
 warmup_steps: 30000
 max_steps: 500000
@@ -48,6 +49,6 @@ adam_beta2: 0.98
 overwrite_output_dir: True
 output_dir: "./checkpoints/{run_name}"
 report_to: "wandb"
-wandb_project: "sarah_testing"
+wandb_project: "huggingface" # update this with your own project!
 logging_first_step: True
 logging_dir: "./wandb/{run_name}"
