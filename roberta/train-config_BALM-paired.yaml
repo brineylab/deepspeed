@@ -9,7 +9,7 @@ max_position_embeddings: 514
 type_vocab_size: 2 # roberta architectures only
 
 # Tokenizer
-tokenizer_path: "/home/jovyan/shared/Sarah/BALM-paper/pre-training/BALM/tokenizer/"
+tokenizer_path: "./tokenizer/"
 padding: "max_length"
 max_length: 512
 truncation: True
@@ -17,9 +17,9 @@ add_special_tokens: True
 return_special_tokens_mask: True
 
 # Datasets
-train_file: "/home/jovyan/shared/Sarah/training-data/jaffe_lc-coherence/paired/LC-coherence_90-5-5/cls-seperator/train.parquet"
-validation_file: "/home/jovyan/shared/Sarah/training-data/jaffe_lc-coherence/paired/LC-coherence_90-5-5/cls-seperator/eval.parquet"
-sequence_column: "text" # to enable use of differently formatted datasets
+train_file: "train.parquet"
+validation_file: "eval.parquet"
+sequence_column: "text"
 file_type: "parquet"
 
 # Collator
@@ -45,10 +45,9 @@ adam_epsilon: 0.000001
 adam_beta1: 0.9
 adam_beta2: 0.98
 
+# Logging & Outputs
+# logging and output directories are set in the training script
 overwrite_output_dir: True
-output_dir: "./checkpoints/{run_name}"
 report_to: "wandb"
-wandb_project: "sarah_testing"
-wandb_job_type: "deepspeed-stages"
+wandb_project: "huggingface" # update this with your own project!
 logging_first_step: True
-logging_dir: "./wandb/{run_name}"

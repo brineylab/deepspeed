@@ -78,11 +78,11 @@ def define_args(train_config, run_name):
 
         # output and logging
         logging_steps=train_config.get("logging_steps", 100),
-        output_dir=train_config.get("output_dir", f"../checkpoints/{run_name}"),
         overwrite_output_dir=train_config.get("overwrite_output_dir", True),
-        logging_dir=train_config.get("logging_dir", f"../wandb/{run_name}"),
-        report_to=train_config.get("report_to", None),
+        report_to=train_config.get("report_to", "none"),
         logging_first_step=train_config.get("logging_first_step", True),
+        output_dir=f"./checkpoints/{run_name}",
+        logging_dir=f"./wandb/{run_name}",
     )
     
     return training_args

@@ -52,15 +52,21 @@ def define_args(train_config, run_name):
     
     # setup training arguments
     training_args = TrainingArguments(
+        run_name=run_name,
         fp16=train_config.get("fp16", True),
-        evaluation_strategy=train_config.get("evaluation_strategy", "steps"),
         seed=train_config.get("seed", 42),
-        per_device_train_batch_size=train_config.get("batch_size",32),
-        per_device_eval_batch_size=train_config.get("batch_size",32),
+
+        # batch sizes
+        per_device_train_batch_size=train_config.get("batch_size", 32),
+        per_device_eval_batch_size=train_config.get("batch_size", 32),
+
+        # eval
+        evaluation_strategy=train_config.get("evaluation_strategy", "steps"),
+        eval_steps=train_config.get("eval_steps", 25000),
+
+        # train
         max_steps=train_config.get("max_steps", 500000),
         save_steps=train_config.get("save_steps", 50000),
-        logging_steps=train_config.get("logging_steps", 100),
-        eval_steps=train_config.get("eval_steps", 25000),
         adam_beta1=train_config.get("adam_beta1", 0.9),
         adam_beta2=train_config.get("adam_beta2", 0.98),
         adam_epsilon=train_config.get("adam_epsilon", 1e-6),
@@ -70,12 +76,12 @@ def define_args(train_config, run_name):
         gradient_accumulation_steps=train_config.get("gradient_accumulation_steps", 1),
 
         # output and logging
-        output_dir=train_config.get("output_dir", f"../checkpoints/{run_name}"),
+        logging_steps=train_config.get("logging_steps", 100),
         overwrite_output_dir=train_config.get("overwrite_output_dir", True),
-        logging_dir=train_config.get("logging_dir", f"../wandb/{run_name}"),
-        report_to=train_config.get("report_to", None),
-        run_name=run_name,
+        report_to=train_config.get("report_to", "none"),
         logging_first_step=train_config.get("logging_first_step", True),
+        output_dir=f"./checkpoints/{run_name}",
+        logging_dir=f"./wandb/{run_name}",
     )
     
     return training_args
