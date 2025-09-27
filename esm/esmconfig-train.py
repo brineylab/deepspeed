@@ -174,8 +174,6 @@ def main():
     args = parser()
     train_config = load_config(args.train_config)
 
-    run_name = train_config.get("run_name") + f"_{date.today().isoformat()}"
-
     # tokenize
     tokenizer = EsmTokenizer.from_pretrained(train_config.get("tokenizer_path"))
     tokenized_dataset = load_and_tokenize(train_config, tokenizer)
