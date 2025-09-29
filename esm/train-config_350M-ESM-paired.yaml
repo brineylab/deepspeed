@@ -27,7 +27,7 @@ mlm: True
 mlm_probability: 0.15
 
 # Training Arguments
-run_name: "BALM-paired-ESM"
+run_name: "BALM-paired-ESM_${date}"
 fp16: True
 seed: 42
 batch_size: 32

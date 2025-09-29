@@ -9,6 +9,7 @@ from transformers import (
     TrainingArguments,
     Trainer,
 )
+from string import Template
 import torch
 from datasets import load_dataset
 import argparse
@@ -31,6 +32,39 @@ def parser():
     
     args = parser.parse_args()
     return args
+
+def load_config(config_path: str) -> dict:
+    """Load a YAML training configuration file and resolve string template placeholders.
+
+    Args:
+        config_path (str): Location of the YAML file containing training settings.
+
+    Returns:
+        dict: Parsed configuration dictionary with template substitutions applied.
+    """
+    
+    with open(config_path, "r") as f:
+        train_config = yaml.safe_load(f)
+
+    substitutions = {
+        **train_config,
+        "date": f"{date.today().isoformat()}_{os.getpid()}",
+    }
+
+    def recursive_substitute(value, subs):
+        if isinstance(value, str):
+            prev = None
+            while value != prev:
+                prev = value
+                value = Template(value).safe_substitute(subs)
+            return value
+        return value
+
+    # Apply substitution for each top-level key
+    train_config = {
+        k: recursive_substitute(v, substitutions) for k, v in train_config.items()
+    }
+    return train_config
 
 # this config setup is specific for the folding model
 def define_config(train_config, tokenizer):
@@ -138,10 +172,7 @@ def load_and_tokenize(train_config, tokenizer):
 def main():
     # parse cl args
     args = parser()
-    with open(args.train_config, 'r') as stream:
-        train_config = yaml.safe_load(stream)
-
-    run_name = train_config.get("run_name") + f"_{date.today().isoformat()}"
+    train_config = load_config(args.train_config)
 
     # tokenize
     tokenizer = EsmTokenizer.from_pretrained(train_config.get("tokenizer_path"))
