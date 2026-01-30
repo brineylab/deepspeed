@@ -1,0 +1,85 @@
+# Model Config - Real Paired Test Model
+
+# for custom tokenizer
+vocab_size: 33
+pad_token_id: 1
+mask_token_id: 32
+
+## Model Size
+
+# # Model Dimensions - 150M
+# num_attention_heads: 20
+# num_hidden_layers: 30
+# hidden_size: 640
+# intermediate_size: 2560
+
+# Model Dimensions - 350M
+num_attention_heads: 20
+num_hidden_layers: 32
+hidden_size: 960
+intermediate_size: 3840
+
+# # Model Dimensions - 650M
+# num_attention_heads: 20
+# num_hidden_layers: 33
+# hidden_size: 1280
+# intermediate_size: 5120
+
+max_position_embeddings: 322
+position_embedding_type: "rotary"
+
+# Tokenizer
+tokenizer_path: "./vocab/vocab.txt"
+separator: "<cls>"
+padding: "max_length"
+truncation: True
+max_length: 320
+num_processes: 64
+
+# Datasets (maximum 90% sequence identity between each set)
+datasets:
+  train: "./data/real/real-train_20251209.parquet"
+
+  real_eval: "./data/real/real-eval_20251209.parquet"
+  syn_eval: "./data/synpair/synpair-eval_20251209.parquet"
+  random_eval: "./data/random/random-eval_20260120.parquet"
+
+file_type: "parquet"
+cache_dir: "./.cache/tokenized_datasets"
+# eval_set_fraction: 1
+
+# Collator
+mlm: True
+mlm_probability: 0.15
+
+# Training Arguments
+run_name: "real-paired_mlm_350M_${date}"
+fp16: True
+seed: 42
+per_device_train_batch_size: 32
+per_device_eval_batch_size: 32
+gradient_accumulation_steps: 1
+logging_steps: 500
+eval_strategy: "steps"
+eval_steps: 10000
+
+warmup_steps: 18000
+max_steps: 20000
+# 1 epoch = ?? steps
+
+lr_scheduler_type: "linear"
+learning_rate: 0.0001
+weight_decay: 0.01
+
+# Logging
+overwrite_output_dir: True
+output_dir: "./output/${run_name}"
+report_to: "wandb"
+wandb_project: "inf_training"
+wandb_group: "initial_testing"
+logging_first_step: True
+logging_dir: "./logs/${run_name}"
+
+# Saving
+save_strategy: "steps"
+save_steps: 10000
