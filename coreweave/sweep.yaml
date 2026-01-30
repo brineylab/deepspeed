@@ -1,0 +1,23 @@
+program: pretraining.py
+name: sweepdemo
+method: bayes
+metric:
+  goal: minimize
+  name: train_loss
+parameters:
+  learning_rate:
+    min: 0.0001
+    max: 0.1
+  per_device_train_batch_size:
+    values: [16, 32, 64]
+command:
+  - accelerate
+  - launch
+  - --main_process_port
+  - ${envvar:MAIN_PROCESS_PORT}
+  - --config_file
+  - ./default_config.yaml
+  - ${program}
+  - --config_file
+  - pretrain_real_org.yaml
+  - ${args}
