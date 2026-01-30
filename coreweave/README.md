@@ -17,16 +17,18 @@ This command will output a sweep ID that looks like: `username/project_id/sweep_
 Open [`job.sh`](./job.sh) and replace the placeholder `<SWEEP_ID>` with the sweep ID from step 1:
 
 ```diff
+# Before
 - wandb agent <SWEEP_ID>
-
+# After
 + wandb agent username/deepspeed_coreweave/abc123xyz
 ```
 
 Modify the mount path to point to the folder where your code is located.
 
 ```diff
+# Before
 - #SBATCH --container-mounts=/path/to/folder:/workspace
-
+# After
 + #SBATCH --container-mounts=/mnt/home/user/code_folder:/workspace
 ```
 
@@ -41,7 +43,9 @@ Increase or decrease the number jobs to run by modifying the `--array` parameter
 ```
 
 ```diff
+# Before
 - #SBATCH --array=0-3%4
+# After
 + #SBATCH --array=0-7%4
 ```
 
