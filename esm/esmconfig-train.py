@@ -2,8 +2,8 @@ import os
 import warnings
 warnings.simplefilter('ignore')
 from transformers import (
-    EsmConfig, 
-    EsmTokenizer, 
+    EsmConfig,
+    EsmTokenizer,
     EsmForMaskedLM,
     DataCollatorForLanguageModeling,
     TrainingArguments,
@@ -20,7 +20,7 @@ import yaml
 
 def parser():
     parser = argparse.ArgumentParser()
-    
+
     # train argument parser
     parser.add_argument(
         "--train_config",
@@ -29,7 +29,7 @@ def parser():
         type=pathlib.Path,
         help="yaml file containing training arguments is required!",
     )
-    
+
     args = parser.parse_args()
     return args
 
@@ -42,7 +42,7 @@ def load_config(config_path: str) -> dict:
     Returns:
         dict: Parsed configuration dictionary with template substitutions applied.
     """
-    
+
     with open(config_path, "r") as f:
         train_config = yaml.safe_load(f)
 
@@ -84,7 +84,7 @@ def define_config(train_config, tokenizer):
 
 
 def define_args(train_config, run_name):
-    
+
     # setup training arguments
     training_args = TrainingArguments(
         run_name=run_name,
@@ -94,11 +94,11 @@ def define_args(train_config, run_name):
         # batch sizes
         per_device_train_batch_size=train_config.get("batch_size", 32),
         per_device_eval_batch_size=train_config.get("batch_size", 32),
-        
+
         # eval
         evaluation_strategy=train_config.get("evaluation_strategy", "steps"),
         eval_steps=train_config.get("eval_steps", 25000),
-        
+
         # training
         max_steps=train_config.get("max_steps", 500000),
         save_steps=train_config.get("save_steps", 50000),
@@ -118,32 +118,32 @@ def define_args(train_config, run_name):
         output_dir=f"./checkpoints/{run_name}",
         logging_dir=f"./wandb/{run_name}",
     )
-    
+
     return training_args
 
 def preprocess_dataset(
-    seq, 
-    tokenizer, 
+    seq,
+    tokenizer,
     separator,
     padding="max_length",
     truncation=True,
     max_len=512
 ) -> list:
-        
+
     # reformat sequences with sep tokens
     sequence = seq['heavy_sequence'] + separator + seq['light_sequence']
-    
+
     # tokenize
-    tokenized = tokenizer(sequence, 
-                          padding=padding, 
+    tokenized = tokenizer(sequence,
+                          padding=padding,
                           max_length=max_len,
                           truncation=truncation)
-    
+
     # special tokens mask - after tokenizer
     # so <cls> seperator tokens get added to attention mask
-    tokenized['special_tokens_mask'] = tokenizer.get_special_tokens_mask(tokenized['input_ids'], 
+    tokenized['special_tokens_mask'] = tokenizer.get_special_tokens_mask(tokenized['input_ids'],
                                     already_has_special_tokens=True)
-    
+
     return tokenized
 
 
@@ -183,26 +183,26 @@ def main():
 
     # define training args
     training_args = define_args(train_config, run_name)
-    
+
     # collator
     collator = DataCollatorForLanguageModeling(
-        tokenizer=tokenizer, 
-        mlm=train_config.get("mlm", True), 
+        tokenizer=tokenizer,
+        mlm=train_config.get("mlm", True),
         mlm_probability=train_config.get("mlm_probability", 0.15)
     )
-    
+
     # wandb
     # don't call wandb.init() -> let Trainer call it automatically,
     # otherwise multiple runs will be initilized
     wandb.login()
     os.environ["WANDB_PROJECT"] = train_config.get("wandb_project")
-    
+
     # model
     model = EsmForMaskedLM(model_config)
 
     model_size = sum(p.numel() for p in model.parameters())
     print(f"Model size: {model_size/1e6:.2f}M")
-    
+
     # train
     trainer = Trainer(
         model=model,
@@ -212,11 +212,11 @@ def main():
         eval_dataset=tokenized_dataset["eval"]
     )
     trainer.train()
-    
+
     # save and end
     trainer.save_model(f"./models/{run_name}")
-    
+
     # don't finish wandb manually - it will finish when the script ends
-    
+
 if __name__ == "__main__":
     main()
