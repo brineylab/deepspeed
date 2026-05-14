@@ -3,6 +3,8 @@ checkpoints/
 wandb/
 models/
 data/
+output/
+.cache/
 
 # jupyter notebooks
 .ipynb_checkpoints
@@ -12,3 +14,7 @@ __pycache__
 
 # macOS
 *.DS_Store
+
+# misc
+.bash_history
+tea_debug.log
