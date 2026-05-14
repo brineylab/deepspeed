@@ -58,7 +58,6 @@ class DataArguments:
     datasets: Optional[dict] = field(default=dict)
     separator: Optional[str] = field(default="<s>")
     num_processes: Optional[int] = field(default=64)
-    cache_dir: Optional[str] = field(default="./.cache")
 
 
 @dataclass
@@ -135,8 +134,8 @@ def preprocess_dataset(
 ) -> list:
 
     # reformat sequences with separator
-    paired_sequence = sequence["sequence_aa"]
-    # paired_sequence = sequence["sequence_aa_heavy"] + separator + sequence["sequence_aa_light"]
+    # paired_sequence = sequence["sequence_aa"]
+    paired_sequence = sequence["sequence_aa:0"] + separator + sequence["sequence_aa:1"]
 
     # tokenize
     tokenized = tokenizer(paired_sequence,
@@ -169,7 +168,6 @@ def load_and_tokenize(data_args, tokenizer):
             "separator": data_args.separator_token
         },
         num_proc=data_args.num_processes,
-        cache_file_names={k: f"{data_args.cache_dir}/{str(k)}.arrow" for k in dataset},
     )
 
     return tokenized_dataset
@@ -246,11 +244,7 @@ def main():
         args=training_args,
         data_collator=data_collator,
         train_dataset=tokenized_datasets["train"],
-        eval_dataset = {
-            "real_paired": tokenized_datasets["real_eval"],
-            "syn_paired": tokenized_datasets["syn_eval"],
-            # "random_paired": tokenized_datasets["random_eval"],
-        },
+        eval_dataset = tokenized_datasets["eval"],
     )
     trainer.train()
 

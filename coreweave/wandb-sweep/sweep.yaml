@@ -16,8 +16,8 @@ command:
   - --main_process_port
   - ${envvar:MAIN_PROCESS_PORT}
   - --config_file
-  - ./default_config.yaml
+  - ./accelerate_config.yaml
   - ${program}
   - --config_file
-  - pretrain_real_org.yaml
+  - ./train_config.yaml
   - ${args}
