@@ -32,6 +32,9 @@ export MASTER_PORT=$((10000 + SLURM_JOB_ID % 50000))
 export NCCL_DEBUG=INFO
 export OMP_NUM_THREADS=1
 
+# With rdzv_backend=c10d (set in accelerate_config.yaml), accelerate auto-assigns
+# machine ranks via dynamic rendezvous against $MASTER_ADDR:$MASTER_PORT — no
+# explicit --machine_rank needed
 srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
   --export=ALL \
   --container-image=/mnt/data/containers/deeplearning_v2026-04-16.sqsh \
@@ -43,7 +46,6 @@ srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
     --config_file ./accelerate_config.yaml \
     --num_machines $SLURM_NNODES \
     --num_processes $((SLURM_NNODES * 8)) \
-    --machine_rank $SLURM_PROCID \
     --main_process_ip "$MASTER_ADDR" \
     --main_process_port $MASTER_PORT \
     pretraining.py --config_file ./train_config.yaml
