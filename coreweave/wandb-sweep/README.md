@@ -4,10 +4,10 @@
 
 #### 1. Initialize the W&B Sweep
 
-Create a new sweep in your W&B project:
+Create a new sweep in your W&B project. You can do this from the wandb website or the command line:
 
 ```bash
-wandb sweep --project project_id sweep.yaml
+wandb sweep --project project_name sweep.yaml
 ```
 
 This command will output a sweep ID that looks like: `username/project_id/sweep_id`
@@ -54,5 +54,5 @@ Increase or decrease the number jobs to run by modifying the `--array` parameter
 Start the sweep agents by running:
 
 ```bash
-bash jobs.sh
+sbatch job.sh
 ```
