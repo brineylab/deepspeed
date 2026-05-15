@@ -26,9 +26,6 @@ set -euo pipefail
 # source env file
 source /mnt/home/sburbach/.env
 
-# cd into the directory the job was submitted from
-cd "$SLURM_SUBMIT_DIR"
-
 # distributed rendezvous (sbatch body runs on the rank-0 node)
 export MASTER_ADDR=$(hostname --ip-address)
 export MASTER_PORT=$((10000 + SLURM_JOB_ID % 50000))
@@ -36,6 +33,7 @@ export NCCL_DEBUG=INFO
 export OMP_NUM_THREADS=1
 
 srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
+  --export=ALL \
   --container-name=deeplearning_v2026-04-16 \
   --container-image=brineylab/deeplearning:v2026-04-16 \
   --container-mounts=/mnt/home/sburbach:/mnt/home/sburbach,/mnt/data:/mnt/data,/tmp:/tmp \
