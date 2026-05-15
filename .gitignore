@@ -7,14 +7,15 @@ output/
 .cache/
 
 # jupyter notebooks
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
 # python
-__pycache__
+__pycache__/
 
 # macOS
-*.DS_Store
+.DS_Store
 
 # misc
 .bash_history
 tea_debug.log
+.deepspeed_env
