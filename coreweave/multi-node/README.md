@@ -2,7 +2,9 @@
 
 Scales the [`single-run/`](../single-run) workflow across **2 nodes × 8 GPUs = 16 GPUs** via `accelerate launch`.
 
-Based on the CoreWeave SUNK training tutorial: <https://docs.coreweave.com/products/sunk/tutorials/train-on-sunk>.
+Based on:
+- CoreWeave SUNK training tutorial: <https://docs.coreweave.com/products/sunk/tutorials/train-on-sunk>
+- HuggingFace's multi-node SLURM example: <https://github.com/huggingface/accelerate/blob/main/examples/slurm/submit_multinode.sh>
 
 ### Submit
 
@@ -48,8 +50,24 @@ One side-effect: we set `--container-workdir="$SLURM_SUBMIT_DIR"` so accelerate 
 
 The sbatch body sources `/mnt/home/sburbach/.env` just like single-run does. Slurm's `--export=ALL` (its default) passes the resulting environment to `srun`, and pyxis carries it into the container — so `WANDB_API_KEY`, `TOKENIZERS_PARALLELISM`, and your cache paths all reach the Python process with no extra plumbing. To add a new var, drop it in `.env` (or `export` it in the sbatch body) and you're done.
 
+#### Tokenization runs once, not 16 times
+
+Every rank executes `pretraining.py` top-to-bottom, so without protection all 16 ranks would simultaneously call `dataset.map()` and race on the HuggingFace datasets cache. The script wraps the tokenization call in `training_args.main_process_first(local=False, ...)`, which makes rank 0 do the work first and the other 15 ranks block until the cache is populated.
+
+The `local=False` is the multi-node-specific tweak: with a shared NFS cache directory across nodes, only **global** rank 0 needs to tokenize. The default (`local=True`) would have one rank-0 per node tokenize redundantly — fine on single-node, wasteful here.
+
+### Verify it's actually multi-node
+
+The fastest sanity check is the W&B run config: a working multi-node job produces **one** W&B run with `world_size=16`. If you see **two parallel runs** each with `world_size=8`, the nodes formed independent worlds and never actually communicated. You can also grep the slurm log:
+
+```bash
+grep -E 'Num (machines|processes)' /mnt/home/sburbach/logs/test_multinode_*.out
+```
+
+Working: `Num machines: 2  Num processes: 16` (logged once). Broken: `Num machines: 1  Num processes: 8` logged twice (once per node).
+
 ### Troubleshooting
 
+- **Two W&B runs / `world_size=8` instead of 16.** The nodes formed independent worlds instead of joining one. Check that `accelerate_config.yaml` has `rdzv_backend: c10d` (not `static`) — with static rendezvous, you'd need an explicit per-node `--machine_rank`, which requires deferring `$SLURM_PROCID` expansion via a `bash -c` wrapper. c10d sidesteps that whole issue by auto-assigning ranks dynamically.
 - **Job hangs at NCCL init.** Workers can't reach `MASTER_ADDR`. Add `export NCCL_SOCKET_IFNAME=eth0` (or whatever `ip a` shows on the compute nodes) before the `srun`.
-- **`SLURM_PROCID` is 0 on every node.** The `--ntasks-per-node=1` flag got dropped from the `srun` line. With multiple tasks per node, `SLURM_PROCID` is the global task rank, not the node rank — which breaks the `--machine_rank=$SLURM_PROCID` mapping.
-- **Only 8 GPUs visible in W&B.** Accelerate fell back to the YAML's `num_processes`. The CLI override didn't take effect — confirm the `srun` line is intact.
+- **Only 8 GPUs visible in W&B (single run).** Accelerate fell back to the YAML's `num_processes` — the CLI override didn't take effect. Confirm the `srun` line is intact.

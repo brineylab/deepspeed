@@ -117,7 +117,6 @@ def main():
 
     # tokenize
     tokenizer = RobertaTokenizer.from_pretrained(train_config.get("tokenizer_path"))
-    tokenized_dataset = load_and_tokenize(train_config, tokenizer)
 
     # define model config
     model_config = define_config(train_config, tokenizer)
@@ -131,6 +130,12 @@ def main():
         mlm=train_config.get("mlm", True), 
         mlm_probability=train_config.get("mlm_probability", 0.15)
     )
+
+    # prepare datasets
+    # tokenize on rank 0 first, then remaining ranks load from cache
+    # to avoid CPU overload from concurrent tokenization
+    with training_args.main_process_first(desc="dataset tokenization"):
+        tokenized_dataset = load_and_tokenize(train_config, tokenizer)
     
     # wandb
     # don't call wandb.init() -> let Trainer call it automatically,

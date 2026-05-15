@@ -37,6 +37,8 @@ This guide is based primarily on the information from the Hugging Face Accelerat
 
     * One important note: don't use wandb.init() to initalize your wandb run, this will cause your wandb session to be intitialized multiple times. Just set the wandb enviornmental variables and training arguments in your script (as shown in the example scripts) and let Hugging Face initialize wandb for you.
 
+    * Another important note: wrap your dataset preprocessing step (e.g. `dataset.map(...)` for tokenization) inside `with training_args.main_process_first(desc="..."):`. In a distributed run, every rank executes the script top-to-bottom — without this context manager, each one redundantly tokenizes the same data, racing on the HuggingFace datasets cache. With it, rank 0 does the work first, writes to the cache, and the other ranks then pick up the cached result.
+
 3. Start a terminal multiplexer. This is required, otherwise your training with timeout when you close your connection to the server. 
     
     * `tmux` and `screen` are good options. A useful tmux cheatsheet can be found [here](https://tmuxcheatsheet.com/).

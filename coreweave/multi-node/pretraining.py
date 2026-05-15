@@ -213,7 +213,10 @@ def main():
     tokenizer = EsmTokenizer.from_pretrained(data_args.tokenizer_path)
 
     # Prepare datasets
-    tokenized_datasets = load_and_tokenize(data_args, tokenizer)
+    # Tokenize on rank 0 first, then remaining ranks load from cache
+    # to avoid CPU overload from concurrent tokenization
+    with training_args.main_process_first(local=False, desc="dataset tokenization"):
+        tokenized_datasets = load_and_tokenize(data_args, tokenizer)
 
     # Create model configuration
     logger.info("Creating model config...")
