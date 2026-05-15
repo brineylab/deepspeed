@@ -15,8 +15,8 @@
 #SBATCH --exclusive
 
 # --- logs ---
-#SBATCH --output=/mnt/home/sburbach/logs/%x_%A_%a.out
-#SBATCH --error=/mnt/home/sburbach/logs/%x_%A_%a.err
+#SBATCH --output=/mnt/home/sburbach/logs/%x_%A.out
+#SBATCH --error=/mnt/home/sburbach/logs/%x_%A.err
 
 # Note: no container is used for the initial job. Containers are specified below,
 # so that the training job runs inside a container.
