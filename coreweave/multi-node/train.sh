@@ -18,13 +18,8 @@
 #SBATCH --output=/mnt/home/sburbach/logs/%x_%j.out
 #SBATCH --error=/mnt/home/sburbach/logs/%x_%j.err
 
-# --- container ---
-#SBATCH --container-name=deeplearning_v2026-04-16
-#SBATCH --container-image=brineylab/deeplearning:v2026-04-16
-#SBATCH --container-mounts=/mnt/home/sburbach:/mnt/home/sburbach,/mnt/data:/mnt/data,/tmp:/tmp
-#SBATCH --container-workdir=/mnt/home/sburbach
-#SBATCH --container-env=HOME=/mnt/home/sburbach
-#SBATCH --no-container-mount-home
+# Note: no container is used for the initial job. Containers are specified below,
+# so that the training job runs inside a container.
 
 set -euo pipefail
 
@@ -41,6 +36,12 @@ export NCCL_DEBUG=INFO
 export OMP_NUM_THREADS=1
 
 srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
+  --container-name=deeplearning_v2026-04-16 \
+  --container-image=brineylab/deeplearning:v2026-04-16 \
+  --container-mounts=/mnt/home/sburbach:/mnt/home/sburbach,/mnt/data:/mnt/data,/tmp:/tmp \
+  --container-workdir="$SLURM_SUBMIT_DIR" \
+  --container-env=HOME=/mnt/home/sburbach \
+  --no-container-mount-home \
   accelerate launch \
     --config_file ./accelerate_config.yaml \
     --num_machines $SLURM_NNODES \
