@@ -13,8 +13,8 @@
 #SBATCH --mem=128G
 
 # --- logs ---
-#SBATCH --output=/mnt/home/sburbach/logs/%x_%j.out
-#SBATCH --error=/mnt/home/sburbach/logs/%x_%j.err
+#SBATCH --output=/mnt/home/sburbach/logs/%x_%A_%a.out
+#SBATCH --error=/mnt/home/sburbach/logs/%x_%A_%a.err
 
 # --- container ---
 #SBATCH --container-image=/mnt/data/containers/deeplearning_v2026-04-16.sqsh
