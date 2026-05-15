@@ -31,13 +31,16 @@ Multi-node adds `--nodes`, `--ntasks-per-node=1`, and `--exclusive` on top of th
 Workers on the second node have to know the IP of the head node, and Slurm only picks the allocation at runtime, so this can't go in any YAML. `train.sh` resolves it before launch:
 
 ```bash
-nodes=( $(scontrol show hostnames "$SLURM_JOB_NODELIST") )
-head_node=${nodes[0]}
-export MASTER_ADDR=$(srun --nodes=1 --ntasks=1 -w "$head_node" hostname --ip-address)
-export MASTER_PORT=$((10000 + (SLURM_JOB_ID % 50000)))
+export MASTER_ADDR=$(hostname --ip-address)
+export MASTER_PORT=$((10000 + SLURM_JOB_ID % 50000))
 ```
 
-Note: `hostname --ip-address` (not `$(hostname)`) — the literal hostname isn't always resolvable across nodes on SUNK, the IP always is. `MASTER_PORT` is derived from `SLURM_JOB_ID` so concurrent multi-node jobs don't collide on the same port.
+Why this works: the sbatch script body runs on the first allocated node (the "batch host"), and with `--ntasks-per-node=1` that same node receives `SLURM_PROCID=0` in the main `srun` — i.e. it's the `machine_rank=0` node, exactly what we want `MASTER_ADDR` to point at.
+
+Notes:
+- `hostname --ip-address` (not `$(hostname)`) — the literal hostname isn't always resolvable across nodes on SUNK; the IP always is.
+- `MASTER_PORT` is derived from `SLURM_JOB_ID` so concurrent multi-node jobs don't collide on the same port.
+- We deliberately avoid `scontrol show hostnames` here — it's a Slurm host binary and isn't installed inside the `brineylab/deeplearning` container.
 
 #### 3. Launcher: `srun` wraps `accelerate launch`
 

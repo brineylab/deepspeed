@@ -34,20 +34,11 @@ source /mnt/home/sburbach/.env
 # cd into the directory the job was submitted from
 cd "$SLURM_SUBMIT_DIR"
 
-# resolve the head node and its IP for distributed rendezvous
-nodes=( $(scontrol show hostnames "$SLURM_JOB_NODELIST") )
-head_node=${nodes[0]}
-export MASTER_ADDR=$(srun --nodes=1 --ntasks=1 -w "$head_node" hostname --ip-address)
-# unique port per job to avoid collisions on concurrent multi-node runs
-export MASTER_PORT=$((10000 + (SLURM_JOB_ID % 50000)))
-
+# distributed rendezvous (sbatch body runs on the rank-0 node)
+export MASTER_ADDR=$(hostname --ip-address)
+export MASTER_PORT=$((10000 + SLURM_JOB_ID % 50000))
 export NCCL_DEBUG=INFO
 export OMP_NUM_THREADS=1
-
-echo "Head node:    $head_node"
-echo "MASTER_ADDR:  $MASTER_ADDR"
-echo "MASTER_PORT:  $MASTER_PORT"
-echo "Nodes:        $SLURM_NNODES   Procs/node: 8   World size: $((SLURM_NNODES * 8))"
 
 srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
   accelerate launch \
