@@ -34,8 +34,7 @@ export OMP_NUM_THREADS=1
 
 srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
   --export=ALL \
-  --container-name=deeplearning_v2026-04-16 \
-  --container-image=brineylab/deeplearning:v2026-04-16 \
+  --container-image=/mnt/data/containers/deeplearning_v2026-04-16.sqsh \
   --container-mounts=/mnt/home/sburbach:/mnt/home/sburbach,/mnt/data:/mnt/data,/tmp:/tmp \
   --container-workdir="$SLURM_SUBMIT_DIR" \
   --container-env=HOME=/mnt/home/sburbach \

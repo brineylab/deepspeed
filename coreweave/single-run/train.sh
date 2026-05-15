@@ -14,8 +14,7 @@
 #SBATCH --error=/mnt/home/sburbach/logs/%x_%j.err
 
 # --- container ---
-#SBATCH --container-name=deeplearning_v2026-04-16
-#SBATCH --container-image=brineylab/deeplearning:v2026-04-16
+#SBATCH --container-image=/mnt/data/containers/deeplearning_v2026-04-16.sqsh
 #SBATCH --container-mounts=/mnt/home/sburbach:/mnt/home/sburbach,/mnt/data:/mnt/data,/tmp:/tmp
 #SBATCH --container-workdir=/mnt/home/sburbach
 #SBATCH --container-env=HOME=/mnt/home/sburbach
