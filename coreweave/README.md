@@ -3,7 +3,7 @@
 Job submission scripts and configs for training on CoreWeave's SUNK (Slurm-on-Kubernetes) clusters. Organized by run type:
 
 - [`single-run/`](./single-run) — single-node training (1 × 8 GPUs)
-- [`wandb-sweep/`](./wandb-sweep) — W&B hyperparameter sweeps as Slurm array jobs ([README](./wandb-sweep/README.md))
+- [`wandb-sweep/`](./wandb-sweep) — W&B hyperparameter sweeps as Slurm array jobs
 - [`multi-node/`](./multi-node) — multi-node distributed training across 2+ nodes (WIP - do not use, this is not working!!)
 - `.env` — shared env vars (HuggingFace, W&B, NVIDIA cache paths, `WANDB_API_KEY`)
 
@@ -51,7 +51,7 @@ sudo apt install ./s5cmd_2.3.0-acb67716_linux_amd64.deb
 
 #### Configure credentials
 
-Generate access keys in the CoreWeave console, then export:
+Generate access keys in the CoreWeave console (Administration -> Object storage access keys -> Create key), then export:
 
 ```bash
 export AWS_ACCESS_KEY_ID=your_access_key_id
@@ -64,27 +64,25 @@ Which endpoint to use depends on **where you're running `s5cmd` from**:
 
 | Running from | Endpoint | When to use |
 | --- | --- | --- |
-| Inside CoreWeave (Slurm/compute nodes) | `http://cwlota.com` | Internal, high-speed. Use for all transfers from Slurm/compute nodes. |
+| Inside CoreWeave regions (Slurm/compute nodes) | `http://cwlota.com` | Internal, high-speed. Use for all transfers from Slurm/compute nodes. |
 | Our servers (external) | `https://cwobject.com` | External endpoint. Use when pushing/pulling from our local storage. |
 
 #### Examples
 
-(Assuming bucket name `brineylab-test`.)
-
 List files in object storage:
 
 ```bash
-s5cmd --endpoint-url https://cwobject.com ls s3://brineylab-test
+s5cmd --endpoint-url https://cwobject.com ls s3://brineylab-eu
 ```
 
 Copy from our servers → object storage (external, so use `cwobject`):
 
 ```bash
-s5cmd --endpoint-url https://cwobject.com cp ./test-training/ s3://brineylab-test/test-training/
+s5cmd --endpoint-url https://cwobject.com cp ./test-training/ s3://brineylab-eu/username/test-training/
 ```
 
 Copy from a CoreWeave node → object storage (internal, so use `cwlota`):
 
 ```bash
-s5cmd --endpoint-url http://cwlota.com cp ./test-training/ s3://brineylab-test/test-training/
+s5cmd --endpoint-url http://cwlota.com cp ./test-training/ s3://brineylab-eu/username/test-training/
 ```
