@@ -6,10 +6,11 @@ Scripts and configs for distributed model training using HuggingFace Accelerate 
 
 ```
 training-scripts/
-├── accelerate/         # local multi-GPU training (Scripps clusters)
+├── accelerate/         # general introduction to accelerate for local training
 │   ├── esm/
 │   └── roberta/
-└── coreweave/          # multi-node training on CoreWeave Slurm clusters
+└── coreweave/          # training on CoreWeave SUNK clusters
+    ├── multi-node/
     ├── single-run/
     └── wandb-sweep/
 ```
@@ -20,4 +21,4 @@ Training scripts for local clusters using HuggingFace Accelerate and Deepspeed.
 
 ## coreweave/
 
-Job submission scripts for CoreWeave's Slurm clusters. Covers single runs, WandB hyperparameter sweeps, and multi-node training. 
+Job submission scripts for CoreWeave's SUNK clusters. Covers single training runs, wandb sweeps, and multi-node training. 
