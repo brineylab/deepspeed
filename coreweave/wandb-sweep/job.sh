@@ -27,4 +27,4 @@ cd "$SLURM_SUBMIT_DIR"
 
 export MAIN_PROCESS_PORT=$((29500 + (${SLURM_ARRAY_TASK_ID:-0} % 1000)))
 
-wandb agent --count 1 thebrineylab/coreweave_tests/9hp00jma
+wandb agent --count 1 <SWEEP_ID>
