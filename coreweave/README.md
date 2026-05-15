@@ -31,6 +31,25 @@ Install `wandb` (needed on the head node to create sweeps). In general, **avoid 
 pip install wandb
 ```
 
+### Storage
+
+Every training container mounts three storage destinations:
+
+| Path | Scope | Persistence |
+| --- | --- | --- | --- |
+| `/mnt/home/<user>` | per-user, shared across all nodes (DFS) | persistent |
+| `/mnt/data` | shared across all nodes (DFS) | persistent |
+| `/tmp` | local to each compute node | **ephemeral** - data needs to be transfered at the end of each job |
+
+These get wired into every training container via the `--container-mounts` flag on `srun` (or `#SBATCH --container-mounts` for single-node jobs):
+
+```bash
+--container-mounts=/mnt/home/<user>:/mnt/home/<user>,/mnt/data:/mnt/data,/tmp:/tmp
+```
+
+The [`.env`](./.env) file deliberately points all cache paths (`HF_HOME`, `WANDB_*`, `CUDA_CACHE_PATH`, `XDG_CACHE_HOME`, etc.) to `/tmp/*` so they hit local SSD rather than round-tripping through the DFS — important for tokenization throughput.
+
+
 ### Data transfer (object storage)
 
 CoreWeave provides S3-compatible object storage. Two buckets are provisioned for the lab:
