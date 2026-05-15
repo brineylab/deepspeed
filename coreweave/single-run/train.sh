@@ -16,6 +16,9 @@
 
 set -euo pipefail
 
+# source env file
+source /mnt/home/sburbach/.env
+
 # cd into the directory the job was submitted from
 cd "$SLURM_SUBMIT_DIR"
 
