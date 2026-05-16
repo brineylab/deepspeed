@@ -34,18 +34,18 @@ mlm: True
 mlm_probability: 0.15
 
 # Training Arguments
-run_name: "real-paired_mlm_350M_${date}"
+run_name: "multi-node_paired-7M_350M_${date}"
 fp16: True
 seed: 42
-per_device_train_batch_size: 32
-per_device_eval_batch_size: 32
+per_device_train_batch_size: 64
+per_device_eval_batch_size: 64
 gradient_accumulation_steps: 1
 logging_steps: 500
 eval_strategy: "steps"
-eval_steps: 10000
+eval_steps: 5000
 
-warmup_steps: 1200
-max_steps: 20000
+warmup_steps: 15000
+max_steps: 250000
 
 lr_scheduler_type: "linear"
 learning_rate: 0.0001
@@ -61,4 +61,4 @@ logging_dir: "./logs/${run_name}"
 
 # Saving
 save_strategy: "steps"
-save_steps: 10000
+save_steps: 25000
