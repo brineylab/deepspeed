@@ -42,10 +42,12 @@ srun --nodes=$SLURM_NNODES --ntasks-per-node=1 \
   --container-workdir="$SLURM_SUBMIT_DIR" \
   --container-env=HOME=/mnt/home/sburbach \
   --no-container-mount-home \
-  accelerate launch \
-    --config_file ./accelerate_config.yaml \
+  bash -c 'accelerate launch \
+    --multi_gpu \
+    --mixed_precision fp16 \
     --num_machines $SLURM_NNODES \
     --num_processes $((SLURM_NNODES * 8)) \
+    --machine_rank $SLURM_PROCID \
     --main_process_ip "$MASTER_ADDR" \
     --main_process_port $MASTER_PORT \
-    pretraining.py --config_file ./train_config.yaml
+    pretraining.py --config_file ./train_config.yaml'

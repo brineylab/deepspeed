@@ -215,7 +215,7 @@ def main():
     # Prepare datasets
     # Tokenize on rank 0 first, then remaining ranks load from cache
     # to avoid CPU overload from concurrent tokenization
-    with training_args.main_process_first(local=False, desc="dataset tokenization"):
+    with training_args.main_process_first(local=True, desc="dataset tokenization"):
         tokenized_datasets = load_and_tokenize(data_args, tokenizer)
 
     # Create model configuration
