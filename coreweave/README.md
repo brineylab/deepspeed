@@ -35,11 +35,11 @@ pip install wandb
 
 Every training container mounts three storage destinations:
 
-| Path | Scope | Persistence |
-| --- | --- | --- | --- |
-| `/mnt/home/<user>` | per-user, shared across all nodes (DFS) | persistent |
-| `/mnt/data` | shared across all nodes (DFS) | persistent |
-| `/tmp` | local to each compute node | **ephemeral** - data needs to be transfered at the end of each job |
+| Path | Scope | Persistence |  
+| --- | --- | --- |  
+| `/mnt/home/<user>` | per-user, shared across all nodes (DFS) | persistent |  
+| `/mnt/data` | shared across all nodes (DFS) | persistent |  
+| `/tmp` | local to each compute node | **ephemeral** - data needs to be transfered at the end of each job |  
 
 These get wired into every training container via the `--container-mounts` flag on `srun` (or `#SBATCH --container-mounts` for single-node jobs):
 
